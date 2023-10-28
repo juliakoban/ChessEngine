@@ -85,3 +85,4 @@ class Board:
         if is_valid:
             self.board[8 - move[0]][move[1]] = self.board[8 - p[0]][p[1]]
             self.board[8 - p[0]][p[1]] = piece.Tile()
+
