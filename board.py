@@ -1,7 +1,14 @@
 import piece
+import os
+
 
 def is_valid_format(input):
+    # only letters A, ..., H
+    # only numbers 1, ..., 8
+    # only 4 letter strings
+    # make letters capital
     return True
+
 
 def read():
     while True:
@@ -9,6 +16,7 @@ def read():
         if is_valid_format(move_input):
             return move_input
         print("Invalid input")
+
 
 def letter_to_number(letter):
     match letter:
@@ -29,11 +37,14 @@ def letter_to_number(letter):
         case "H":
             return 7
 
-def get_piece_from_input(input):
-    return [int(input[1]), letter_to_number(input[0])]
+
+def get_pos_from_input(input):
+    return [8 - int(input[1]), letter_to_number(input[0])]
+
 
 def get_move_from_input(input):
-    return [int(input[3]), letter_to_number(input[2])]
+    return [8 - int(input[3]), letter_to_number(input[2])]
+
 
 # 8x8 board
 class Board:
@@ -64,7 +75,7 @@ class Board:
                 piece.Bishop("w"),
                 piece.Knight("w"),
                 piece.Rook("w"),
-            ]
+            ],
         ]
 
     def display(self):
@@ -75,14 +86,24 @@ class Board:
             print()
         print("  A B C D E F G H")
 
-    def update(self):
-        input = read()
-        p = get_piece_from_input(input)
-        move = get_move_from_input(input)
-        moves = self.board[8 - p[0]][p[1]].generate_legal_moves(8 - p[0], p[1])
-        print(self.board[8 - p[0]][p[1]].generate_legal_moves(8 - p[0], p[1]))
-        is_valid = self.board[8 - p[0]][p[1]].validate_move(moves, 8 - move[0], move[1])
-        if is_valid:
-            self.board[8 - move[0]][move[1]] = self.board[8 - p[0]][p[1]]
-            self.board[8 - p[0]][p[1]] = piece.Tile()
+    def update(self, turn):
+        while True:
+            print(f"{turn} to move!")
+            input = read()
 
+            current_pos = get_pos_from_input(input)
+            move = get_move_from_input(input)
+
+            moves = self.board[current_pos[0]][current_pos[1]].generate_legal_moves(
+                current_pos[0], current_pos[1]
+            )
+            is_valid = self.board[current_pos[0]][current_pos[1]].validate_move(
+                moves, move[0], move[1]
+            )
+
+            if self.board[current_pos[0]][current_pos[1]].color == turn and is_valid:
+                self.board[move[0]][move[1]] = self.board[current_pos[0]][
+                    current_pos[1]
+                ]
+                self.board[current_pos[0]][current_pos[1]] = piece.Tile()
+                break
