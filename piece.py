@@ -21,7 +21,7 @@ TILE = "\u25FB"
 
 # abstract class
 class Piece(ABC):
-    def __init__(self, color="b"):
+    def __init__(self, color="black"):
         self._color = color
 
     @property
@@ -36,11 +36,9 @@ class Piece(ABC):
     def generate_legal_moves(self, row, col):
         pass
 
+    @abstractclassmethod
     def validate_move(self, moves, row, col):
-        if [row, col] not in moves:
-            print("Invalid move")
-            return False
-        return True
+        pass
 
 
 class Tile(Piece):
@@ -50,24 +48,33 @@ class Tile(Piece):
     def generate_legal_moves(self, row, col):
         pass
 
+    def validate_move(self, moves, row, col):
+        pass
+
 
 class Pawn(Piece):
     def __str__(self):
-        if self.color == "w":
+        if self.color == "white":
             return WHITE_PAWN
         return BLACK_PAWN
 
     def generate_legal_moves(self, row, col):
         # first move row -2
         # attack one diagonal
-        if self._color == "w":
+        if self._color == "white":
             return [[row - 1, col]]
         return [[row + 1, col]]
+    
+    def validate_move(self, moves, row, col):
+        if [row, col] not in moves:
+            print("Invalid move")
+            return False
+        return True
 
 
 class Rook(Piece):
     def __str__(self):
-        if self.color == "w":
+        if self.color == "white":
             return WHITE_ROOK
         return BLACK_ROOK
 
@@ -79,11 +86,17 @@ class Rook(Piece):
             moves.append([row + _ + 1, col])  # down
             moves.append([row - _ - 1, col])  # up
         return moves
+    
+    def validate_move(self, moves, row, col):
+        if [row, col] not in moves:
+            print("Invalid move")
+            return False
+        return True
 
 
 class Knight(Piece):
     def __str__(self):
-        if self.color == "w":
+        if self.color == "white":
             return WHITE_KNIGHT
         return BLACK_KNIGHT
 
@@ -98,11 +111,17 @@ class Knight(Piece):
             [row + 1, col - 2],
             [row - 1, col - 2],
         ]
+    
+    def validate_move(self, moves, row, col):
+        if [row, col] not in moves:
+            print("Invalid move")
+            return False
+        return True
 
 
 class Bishop(Piece):
     def __str__(self):
-        if self.color == "w":
+        if self.color == "white":
             return WHITE_BISHOP
         return BLACK_BISHOP
 
@@ -114,11 +133,17 @@ class Bishop(Piece):
             moves.append([row + _ + 1, col - _ - 1])  # down left diagonal
             moves.append([row + _ + 1, col + _ + 1])  # down right diagonal
         return moves
+    
+    def validate_move(self, moves, row, col):
+        if [row, col] not in moves:
+            print("Invalid move")
+            return False
+        return True
 
 
 class King(Piece):
     def __str__(self):
-        if self.color == "w":
+        if self.color == "white":
             return WHITE_KING
         return BLACK_KING
 
@@ -133,11 +158,17 @@ class King(Piece):
             [row, col - 1],  # left
             [row, col + 1],  # right
         ]
+    
+    def validate_move(self, moves, row, col):
+        if [row, col] not in moves:
+            print("Invalid move")
+            return False
+        return True
 
 
 class Queen(Piece):
     def __str__(self):
-        if self.color == "w":
+        if self.color == "white":
             return WHITE_QUEEN
         return BLACK_QUEEN
 
@@ -153,3 +184,9 @@ class Queen(Piece):
             moves.append([row + _ + 1, col])  # down
             moves.append([row - _ - 1, col])  # up
         return moves
+    
+    def validate_move(self, moves, row, col):
+        if [row, col] not in moves:
+            print("Invalid move")
+            return False
+        return True

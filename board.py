@@ -51,30 +51,30 @@ class Board:
     def __init__(self):
         self.board = [
             [
-                piece.Rook("b"),
-                piece.Knight("b"),
-                piece.Bishop("b"),
-                piece.Queen("b"),
-                piece.King("b"),
-                piece.Bishop("b"),
-                piece.Knight("b"),
-                piece.Rook("b"),
+                piece.Rook("black"),
+                piece.Knight("black"),
+                piece.Bishop("black"),
+                piece.Queen("black"),
+                piece.King("black"),
+                piece.Bishop("black"),
+                piece.Knight("black"),  
+                piece.Rook("black"),
             ],
-            [piece.Pawn("b") for _ in range(8)],
+            [piece.Pawn("black") for _ in range(8)],
             [piece.Tile() for _ in range(8)],
             [piece.Tile() for _ in range(8)],
             [piece.Tile() for _ in range(8)],
             [piece.Tile() for _ in range(8)],
-            [piece.Pawn("w") for _ in range(8)],
+            [piece.Pawn("white") for _ in range(8)],
             [
-                piece.Rook("w"),
-                piece.Knight("w"),
-                piece.Bishop("w"),
-                piece.Queen("w"),
-                piece.King("w"),
-                piece.Bishop("w"),
-                piece.Knight("w"),
-                piece.Rook("w"),
+                piece.Rook("white"),
+                piece.Knight("white"),
+                piece.Bishop("white"),
+                piece.Queen("white"),
+                piece.King("white"),
+                piece.Bishop("white"),
+                piece.Knight("white"),
+                piece.Rook("white"),
             ],
         ]
 
@@ -86,6 +86,7 @@ class Board:
             print()
         print("  A B C D E F G H")
 
+
     def update(self, turn):
         while True:
             print(f"{turn} to move!")
@@ -94,16 +95,12 @@ class Board:
             current_pos = get_pos_from_input(input)
             move = get_move_from_input(input)
 
-            moves = self.board[current_pos[0]][current_pos[1]].generate_legal_moves(
-                current_pos[0], current_pos[1]
-            )
-            is_valid = self.board[current_pos[0]][current_pos[1]].validate_move(
-                moves, move[0], move[1]
-            )
+            moves = self.board[current_pos[0]][current_pos[1]].generate_legal_moves(current_pos[0], current_pos[1])
+            is_valid = self.board[current_pos[0]][current_pos[1]].validate_move(moves, move[0], move[1])
 
-            if self.board[current_pos[0]][current_pos[1]].color == turn and is_valid:
-                self.board[move[0]][move[1]] = self.board[current_pos[0]][
-                    current_pos[1]
-                ]
+            
+
+            if self.board[current_pos[0]][current_pos[1]].color == turn and is_valid :
+                self.board[move[0]][move[1]] = self.board[current_pos[0]][current_pos[1]]
                 self.board[current_pos[0]][current_pos[1]] = piece.Tile()
                 break
