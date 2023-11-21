@@ -12,9 +12,9 @@ def is_valid_format(input):
 
 def read():
     while True:
-        move_input = input("Enter your move (e.g. B1C3): ").strip()
-        if is_valid_format(move_input):
-            return move_input
+        end_input = input("Enter your end (e.g. B1C3): ").strip()
+        if is_valid_format(end_input):
+            return end_input
         print("Invalid input")
 
 
@@ -38,13 +38,12 @@ def letter_to_number(letter):
             return 7
 
 
-def get_pos_from_input(input):
+def start_from_input(input):
     return [8 - int(input[1]), letter_to_number(input[0])]
 
 
-def get_move_from_input(input):
+def end_from_input(input):
     return [8 - int(input[3]), letter_to_number(input[2])]
-
 
 # 8x8 board
 class Board:
@@ -90,17 +89,33 @@ class Board:
     def update(self, turn):
         while True:
             print(f"{turn} to move!")
+            
             input = read()
 
-            current_pos = get_pos_from_input(input)
-            move = get_move_from_input(input)
-
-            moves = self.board[current_pos[0]][current_pos[1]].generate_legal_moves(current_pos[0], current_pos[1])
-            is_valid = self.board[current_pos[0]][current_pos[1]].validate_move(moves, move[0], move[1])
-
+            start = start_from_input(input)
+            end = end_from_input(input)
+        
+            current_piece = self.board[start[0]][start[1]]
             
+            legal_moves = self.board[start[0]][start[1]].generate_legal_moves(start[0], start[1])
+            moves_between = current_piece.moves_in_between(start, end, legal_moves)
+            is_move_in_moves = current_piece.validate_move(legal_moves, end[0], end[1])
 
-            if self.board[current_pos[0]][current_pos[1]].color == turn and is_valid :
-                self.board[move[0]][move[1]] = self.board[current_pos[0]][current_pos[1]]
-                self.board[current_pos[0]][current_pos[1]] = piece.Tile()
+            #print(start[0], start[1], legal_moves)
+            print(current_piece.moves_in_between(start, end, legal_moves))
+
+            is_valid_color = False
+            is_valid = True
+           
+            if(self.board[end[0]][end[1]].color != turn):
+                is_valid_color = True
+
+            for move in moves_between:
+                    if(self.board[move[0]][move[1]].color != "none"):
+                        is_valid = False
+
+            if current_piece.color == turn and is_move_in_moves and is_valid_color and is_valid:
+                # make this as a swap function?
+                self.board[end[0]][end[1]] = self.board[start[0]][start[1]]
+                self.board[start[0]][start[1]] = piece.Tile()
                 break

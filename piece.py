@@ -21,7 +21,7 @@ TILE = "\u25FB"
 
 # abstract class
 class Piece(ABC):
-    def __init__(self, color="black"):
+    def __init__(self, color="none"):
         self._color = color
 
     @property
@@ -33,12 +33,19 @@ class Piece(ABC):
         pass
 
     @abstractclassmethod
+    # legal in terms of chess rules
     def generate_legal_moves(self, row, col):
         pass
 
     @abstractclassmethod
-    def validate_move(self, moves, row, col):
+    def moves_in_between(self, start, end, moves):
         pass
+ 
+    def validate_move(self, moves, row, col):
+        if [row, col] not in moves:
+            print("Invalid move")
+            return False
+        return True
 
 
 class Tile(Piece):
@@ -47,8 +54,7 @@ class Tile(Piece):
 
     def generate_legal_moves(self, row, col):
         pass
-
-    def validate_move(self, moves, row, col):
+    def moves_in_between(self, start, end, moves):
         pass
 
 
@@ -65,11 +71,8 @@ class Pawn(Piece):
             return [[row - 1, col]]
         return [[row + 1, col]]
     
-    def validate_move(self, moves, row, col):
-        if [row, col] not in moves:
-            print("Invalid move")
-            return False
-        return True
+    def moves_in_between(self, start, end, moves):
+        return []
 
 
 class Rook(Piece):
@@ -92,6 +95,28 @@ class Rook(Piece):
             print("Invalid move")
             return False
         return True
+    
+    def moves_in_between(self, start, end, moves):
+        between = []
+        row_diff = end[0] - start[0]
+        col_diff = end[1] - start[1]
+        
+        for move in moves:
+            if (col_diff == 0): # horizontal move
+                if (row_diff > 0): 
+                    if (move[0] > start[0] and move[0] < end[0]): # down
+                        between.append(move)
+                if (move[0] < start[0] and move[0] > end[0]): # up
+                        between.append(move)
+            elif (row_diff == 0): # vertical move
+                if (col_diff < 0): 
+                    if (move[1] < start[1] and move[1] > end[1]): # left
+                        between.append(move)
+                if (move[1] > start[1] and move[1] < end[1]): # right
+                        between.append(move)
+
+        
+        return between
 
 
 class Knight(Piece):
@@ -112,11 +137,8 @@ class Knight(Piece):
             [row - 1, col - 2],
         ]
     
-    def validate_move(self, moves, row, col):
-        if [row, col] not in moves:
-            print("Invalid move")
-            return False
-        return True
+    def moves_in_between(self, start, end, moves):
+        return []
 
 
 class Bishop(Piece):
@@ -134,11 +156,26 @@ class Bishop(Piece):
             moves.append([row + _ + 1, col + _ + 1])  # down right diagonal
         return moves
     
-    def validate_move(self, moves, row, col):
-        if [row, col] not in moves:
-            print("Invalid move")
-            return False
-        return True
+    def moves_in_between(self, start, end, moves):
+        between = []
+        row_diff = end[0] - start[0]
+        col_diff = end[1] - start[1]
+        
+        for move in moves:
+            if (col_diff > 0): 
+                if (row_diff > 0): 
+                    if (move[0] > start[0] and move[0] < end[0] and move[1] > start[1] and move[1] < end[1]): # right down
+                        between.append(move)
+                if (move[0] < start[0] and move[0] > end[0] and move[1] > start[1] and move[1] < end[1]): # right up
+                        between.append(move)
+            elif (col_diff < 0): 
+                if (row_diff < 0): 
+                    if (move[1] < start[1] and move[1] > end[1] and move[0] < start[0] and move[0] > end[0]): # left up
+                        between.append(move)
+                if (move[1] < start[1] and move[1] > end[1] and move[0] > start[0] and move[0] < end[0]): #left down
+                        between.append(move)
+
+        return between
 
 
 class King(Piece):
@@ -159,11 +196,8 @@ class King(Piece):
             [row, col + 1],  # right
         ]
     
-    def validate_move(self, moves, row, col):
-        if [row, col] not in moves:
-            print("Invalid move")
-            return False
-        return True
+    def moves_in_between(self, start, end, moves):
+        return []
 
 
 class Queen(Piece):
@@ -185,8 +219,24 @@ class Queen(Piece):
             moves.append([row - _ - 1, col])  # up
         return moves
     
-    def validate_move(self, moves, row, col):
-        if [row, col] not in moves:
-            print("Invalid move")
-            return False
-        return True
+    def moves_in_between(self, start, end, moves):
+        between = []
+        row_diff = end[0] - start[0]
+        col_diff = end[1] - start[1]
+
+        for move in moves:
+            if (col_diff >= 0): 
+                if (row_diff > 0): 
+                    if (move[0] > start[0] and move[0] < end[0] and move[1] >= start[1] and move[1] <= end[1]): # right down
+                        between.append(move)
+                if (move[0] < start[0] and move[0] > end[0] and move[1] >= start[1] and move[1] <= end[1]): # right up
+                        between.append(move)
+            elif (col_diff < 0): 
+                if (row_diff < 0): 
+                    if (move[1] < start[1] and move[1] > end[1] and move[0] < start[0] and move[0] > end[0]): # left up
+                        between.append(move)
+                if (move[1] < start[1] and move[1] > end[1] and move[0] > start[0] and move[0] < end[0]): #left down
+                        between.append(move)
+            
+
+        return between

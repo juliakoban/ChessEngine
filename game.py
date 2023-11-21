@@ -11,14 +11,14 @@ def main():
     print("WELCOME TO THE CHESS GAME")
     chess_board.display()
 
-    while round < 2:
+    while round < 3:
         turn = "white"
         chess_board.update(turn)
-        os.system("clear")
+        #os.system("clear")
         chess_board.display()
         turn = "black"
         chess_board.update(turn)
-        os.system("clear")
+        #os.system("clear")
         chess_board.display()
         round += 1
 
