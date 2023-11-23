@@ -98,23 +98,16 @@ class Rook(Piece):
     
     def moves_in_between(self, start, end, moves):
         between = []
-        row_diff = end[0] - start[0]
-        col_diff = end[1] - start[1]
         
         for move in moves:
-            if (col_diff == 0): # horizontal move
-                if (row_diff > 0): 
-                    if (move[0] > start[0] and move[0] < end[0]): # down
-                        between.append(move)
-                if (move[0] < start[0] and move[0] > end[0]): # up
-                        between.append(move)
-            elif (row_diff == 0): # vertical move
-                if (col_diff < 0): 
-                    if (move[1] < start[1] and move[1] > end[1]): # left
-                        between.append(move)
-                if (move[1] > start[1] and move[1] < end[1]): # right
-                        between.append(move)
-
+            if (move[0] > start[0] and move[0] < end[0] and move[1] == start[1]): # down
+                between.append(move)
+            elif (move[0] < start[0] and move[0] > end[0] and move[1] == start[1]): # up
+                between.append(move)
+            elif (move[0] == start[0] and move[1] < start[1] and move[1] > end[1]): # left
+                between.append(move)
+            elif (move[0] == start[0] and move[1] > start[1] and move[1] < end[1]): # right
+                between.append(move)
         
         return between
 
@@ -158,21 +151,15 @@ class Bishop(Piece):
     
     def moves_in_between(self, start, end, moves):
         between = []
-        row_diff = end[0] - start[0]
-        col_diff = end[1] - start[1]
         
         for move in moves:
-            if (col_diff > 0): 
-                if (row_diff > 0): 
-                    if (move[0] > start[0] and move[0] < end[0] and move[1] > start[1] and move[1] < end[1]): # right down
+            if (move[0] > start[0] and move[0] < end[0] and move[1] > start[1] and move[1] < end[1]): # right down
                         between.append(move)
-                if (move[0] < start[0] and move[0] > end[0] and move[1] > start[1] and move[1] < end[1]): # right up
-                        between.append(move)
-            elif (col_diff < 0): 
-                if (row_diff < 0): 
-                    if (move[1] < start[1] and move[1] > end[1] and move[0] < start[0] and move[0] > end[0]): # left up
-                        between.append(move)
-                if (move[1] < start[1] and move[1] > end[1] and move[0] > start[0] and move[0] < end[0]): #left down
+            elif (move[0] < start[0] and move[0] > end[0] and move[1] > start[1] and move[1] < end[1]): # right up
+                        between.append(move)    
+            elif (move[1] < start[1] and move[1] > end[1] and move[0] < start[0] and move[0] > end[0]): # left up
+                        between.append(move)            
+            elif (move[1] < start[1] and move[1] > end[1] and move[0] > start[0] and move[0] < end[0]): #left down
                         between.append(move)
 
         return between
@@ -221,22 +208,34 @@ class Queen(Piece):
     
     def moves_in_between(self, start, end, moves):
         between = []
-        row_diff = end[0] - start[0]
         col_diff = end[1] - start[1]
+        row_diff = end[0] - start[0]
+        direction = ""
+
+        if col_diff == 0:
+            direction = "vertical"
+        elif row_diff == 0:
+            direction = "horizontal"
+        else:
+            direction = "diagonal"
 
         for move in moves:
-            if (col_diff >= 0): 
-                if (row_diff > 0): 
-                    if (move[0] > start[0] and move[0] < end[0] and move[1] >= start[1] and move[1] <= end[1]): # right down
-                        between.append(move)
-                if (move[0] < start[0] and move[0] > end[0] and move[1] >= start[1] and move[1] <= end[1]): # right up
-                        between.append(move)
-            elif (col_diff < 0): 
-                if (row_diff < 0): 
-                    if (move[1] < start[1] and move[1] > end[1] and move[0] < start[0] and move[0] > end[0]): # left up
-                        between.append(move)
-                if (move[1] < start[1] and move[1] > end[1] and move[0] > start[0] and move[0] < end[0]): #left down
-                        between.append(move)
             
+            if (move[0] > start[0] and move[0] < end[0] and move[1] > start[1] and move[1] < end[1]): # right down
+                between.append(move)
+            elif (move[0] < start[0] and move[0] > end[0] and move[1] > start[1] and move[1] < end[1]): # right up
+                between.append(move)    
+            elif (move[1] < start[1] and move[1] > end[1] and move[0] < start[0] and move[0] > end[0]): # left up
+                between.append(move)            
+            elif (move[1] < start[1] and move[1] > end[1] and move[0] > start[0] and move[0] < end[0]): #left down
+                between.append(move)
+            elif (direction == "vertical" and move[0] > start[0] and move[0] < end[0] and move[1] == start[1]): # down
+                between.append(move)
+            elif (direction == "vertical" and move[0] < start[0] and move[0] > end[0] and move[1] == start[1]): # up
+                between.append(move)
+            elif (direction == "horizontal" and move[0] == start[0] and move[1] < start[1] and move[1] > end[1]): # left
+                between.append(move)
+            elif (direction == "horizontal" and move[0] == start[0] and move[1] > start[1] and move[1] < end[1]): # right
+                between.append(move)
 
         return between
