@@ -15,7 +15,7 @@ def read():
         end_input = input("Enter your end (e.g. B1C3): ").strip()
         if is_valid_format(end_input):
             return end_input
-        print("Invalid input")
+        print("Invalid input format")
 
 
 def letter_to_number(letter):
@@ -97,24 +97,26 @@ class Board:
         
             current_piece = self.board[start[0]][start[1]]
             
+            # generate legal, in terms of chess theory, moves and checks whether the move that a player wants to make is included
             legal_moves = self.board[start[0]][start[1]].generate_legal_moves(start[0], start[1])
+            is_move_legal = current_piece.validate_move(legal_moves, end[0], end[1])
+
+            # generate moves between piece's start and supposed end position
             moves_between = current_piece.moves_in_between(start, end, legal_moves)
-            is_move_in_moves = current_piece.validate_move(legal_moves, end[0], end[1])
-
-            #print(start[0], start[1], legal_moves)
-            print(current_piece.moves_in_between(start, end, legal_moves))
-
-            is_valid_color = False
-            is_valid = True
-           
-            if(self.board[end[0]][end[1]].color != turn):
-                is_valid_color = True
-
+            # checks whether the piece is not "jumping" over other pieces while moving
+            clear_path = True
             for move in moves_between:
                     if(self.board[move[0]][move[1]].color != "none"):
-                        is_valid = False
+                        print("You cannot jump over pieces!")
+                        clear_path = False
 
-            if current_piece.color == turn and is_move_in_moves and is_valid_color and is_valid:
+            # make sure that the piece that is moving can only attack the opposite color
+            is_valid_color = True
+            if(self.board[end[0]][end[1]].color == turn):
+                print("You cannot attack yourself!")
+                is_valid_color = False
+
+            if (current_piece.color == turn and is_move_legal and is_valid_color and clear_path):
                 # make this as a swap function?
                 self.board[end[0]][end[1]] = self.board[start[0]][start[1]]
                 self.board[start[0]][start[1]] = piece.Tile()

@@ -65,14 +65,29 @@ class Pawn(Piece):
         return BLACK_PAWN
 
     def generate_legal_moves(self, row, col):
+        all_moves = []
+        moves_on_board =[]
         # first move row -2
         # attack one diagonal
         if self._color == "white":
-            return [[row - 1, col]]
-        return [[row + 1, col]]
+            all_moves.append([row - 1, col])
+        elif self._color == "black":
+            all_moves.append([row + 1, col])
+    
+        for move in all_moves:
+            if (move[0] <= 7 and move[0] >= 0 and move[1] >= 0 and move[1] <= 7):
+                moves_on_board.append(move)
+                
+        return moves_on_board
     
     def moves_in_between(self, start, end, moves):
-        return []
+        between = []
+        for move in moves:    
+            if (move[0] > start[0] and move[0] < end[0] and move[1] == start[1]): # down
+                between.append(move)
+            elif (move[0] < start[0] and move[0] > end[0] and move[1] == start[1]): # up
+                between.append(move)
+        return between
 
 
 class Rook(Piece):
@@ -82,13 +97,20 @@ class Rook(Piece):
         return BLACK_ROOK
 
     def generate_legal_moves(self, row, col):
-        moves = []
+        all_moves = []
+        moves_on_board =[]
+
         for _ in range(8):
-            moves.append([row, col + _ + 1])  # right
-            moves.append([row, col - _ - 1])  # left
-            moves.append([row + _ + 1, col])  # down
-            moves.append([row - _ - 1, col])  # up
-        return moves
+            all_moves.append([row, col + _ + 1])  # right
+            all_moves.append([row, col - _ - 1])  # left
+            all_moves.append([row + _ + 1, col])  # down
+            all_moves.append([row - _ - 1, col])  # up
+        
+        for move in all_moves:
+            if (move[0] <= 7 and move[0] >= 0 and move[1] >= 0 and move[1] <= 7):
+                moves_on_board.append(move)
+
+        return moves_on_board
     
     def validate_move(self, moves, row, col):
         if [row, col] not in moves:
@@ -119,16 +141,23 @@ class Knight(Piece):
         return BLACK_KNIGHT
 
     def generate_legal_moves(self, row, col):
-        return [
-            [row + 2, col + 1],
-            [row - 2, col + 1],
-            [row + 1, col + 2],
-            [row - 1, col + 2],
-            [row + 2, col - 1],
-            [row - 2, col - 1],
-            [row + 1, col - 2],
-            [row - 1, col - 2],
-        ]
+        all_moves = []
+        moves_on_board = []
+
+        all_moves.append([row + 2, col + 1])
+        all_moves.append([row - 2, col + 1])
+        all_moves.append([row + 1, col + 2])
+        all_moves.append([row - 1, col + 2])
+        all_moves.append([row + 2, col - 1])
+        all_moves.append([row - 2, col - 1])
+        all_moves.append([row + 1, col - 2])
+        all_moves.append([row - 1, col - 2])
+
+        for move in all_moves:
+            if (move[0] <= 7 and move[0] >= 0 and move[1] >= 0 and move[1] <= 7):
+                moves_on_board.append(move)
+
+        return moves_on_board
     
     def moves_in_between(self, start, end, moves):
         return []
@@ -141,13 +170,19 @@ class Bishop(Piece):
         return BLACK_BISHOP
 
     def generate_legal_moves(self, row, col):
-        moves = []
+        all_moves = []
+        moves_on_board =[]
         for _ in range(8):
-            moves.append([row - _ - 1, col + _ + 1])  # up right diagonal
-            moves.append([row - _ - 1, col - _ - 1])  # up left diagonal
-            moves.append([row + _ + 1, col - _ - 1])  # down left diagonal
-            moves.append([row + _ + 1, col + _ + 1])  # down right diagonal
-        return moves
+            all_moves.append([row - _ - 1, col + _ + 1])  # up right diagonal
+            all_moves.append([row - _ - 1, col - _ - 1])  # up left diagonal
+            all_moves.append([row + _ + 1, col - _ - 1])  # down left diagonal
+            all_moves.append([row + _ + 1, col + _ + 1])  # down right diagonal
+
+        for move in all_moves:
+            if (move[0] <= 7 and move[0] >= 0 and move[1] >= 0 and move[1] <= 7):
+                moves_on_board.append(move)
+
+        return moves_on_board
     
     def moves_in_between(self, start, end, moves):
         between = []
@@ -172,16 +207,23 @@ class King(Piece):
         return BLACK_KING
 
     def generate_legal_moves(self, row, col):
-        return [
-            [row - 1, col + 1],  # up right diagonal
-            [row - 1, col - 1],  # up left diagonal
-            [row + 1, col - 1],  # down left diagonal
-            [row + 1, col + 1],  # down right diagonal
-            [row - 1, col],  # up
-            [row + 1, col],  # down
-            [row, col - 1],  # left
-            [row, col + 1],  # right
-        ]
+        all_moves = []
+        moves_on_board = []
+
+        all_moves.append([row - 1, col + 1]) # up right diagonal
+        all_moves.append([row - 1, col - 1]) # up left diagonal
+        all_moves.append([row + 1, col - 1]) # down left diagonal
+        all_moves.append([row + 1, col + 1]) # down right diagonal
+        all_moves.append([row - 1, col]) # up
+        all_moves.append([row + 1, col]) # down
+        all_moves.append([row, col - 1]) # left
+        all_moves.append([row, col + 1]) # right
+
+        for move in all_moves:
+            if (move[0] <= 7 and move[0] >= 0 and move[1] >= 0 and move[1] <= 7):
+                moves_on_board.append(move)
+
+        return moves_on_board
     
     def moves_in_between(self, start, end, moves):
         return []
@@ -194,17 +236,23 @@ class Queen(Piece):
         return BLACK_QUEEN
 
     def generate_legal_moves(self, row, col):
-        moves = []
+        all_moves = []
+        moves_on_board = []
         for _ in range(8):
-            moves.append([row - _ - 1, col + _ + 1])  # up right diagonal
-            moves.append([row - _ - 1, col - _ - 1])  # up left diagonal
-            moves.append([row + _ + 1, col - _ - 1])  # down left diagonal
-            moves.append([row + _ + 1, col + _ + 1])  # down right diagonal
-            moves.append([row, col + _ + 1])  # right
-            moves.append([row, col - _ - 1])  # left
-            moves.append([row + _ + 1, col])  # down
-            moves.append([row - _ - 1, col])  # up
-        return moves
+            all_moves.append([row - _ - 1, col + _ + 1])  # up right diagonal
+            all_moves.append([row - _ - 1, col - _ - 1])  # up left diagonal
+            all_moves.append([row + _ + 1, col - _ - 1])  # down left diagonal
+            all_moves.append([row + _ + 1, col + _ + 1])  # down right diagonal
+            all_moves.append([row, col + _ + 1])  # right
+            all_moves.append([row, col - _ - 1])  # left
+            all_moves.append([row + _ + 1, col])  # down
+            all_moves.append([row - _ - 1, col])  # up
+
+        for move in all_moves:
+            if (move[0] <= 7 and move[0] >= 0 and move[1] >= 0 and move[1] <= 7):
+                moves_on_board.append(move)
+
+        return moves_on_board
     
     def moves_in_between(self, start, end, moves):
         between = []
