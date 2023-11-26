@@ -6,13 +6,12 @@ def is_valid_format(input):
     # only letters A, ..., H
     # only numbers 1, ..., 8
     # only 4 letter strings
-    # make letters capital
     return True
 
 
 def read():
     while True:
-        end_input = input("Enter your end (e.g. B1C3): ").strip()
+        end_input = input("enter your move (e.g. B1C3): ").strip()
         if is_valid_format(end_input):
             return end_input
         print("Invalid input format")
@@ -39,11 +38,12 @@ def letter_to_number(letter):
 
 
 def start_from_input(input):
-    return [8 - int(input[1]), letter_to_number(input[0])]
+    return [8 - int(input[1]), letter_to_number(input[0].upper())]
 
 
 def end_from_input(input):
-    return [8 - int(input[3]), letter_to_number(input[2])]
+    return [8 - int(input[3]), letter_to_number(input[2].upper())]
+
 
 # 8x8 board
 class Board:
@@ -85,6 +85,42 @@ class Board:
             print()
         print("  A B C D E F G H")
 
+    def check(self, turn):
+        for row in range(8):
+            for column in range(8):
+
+                if (self.board[row][column].color == turn):
+                    start = [row, column]
+                    legal_moves = self.board[row][column].generate_legal_moves(row, column, True)
+
+                    for move in legal_moves:
+                        end = [move[0], move[1]]
+                        moves_between = self.board[row][column].moves_in_between(start, end, legal_moves)
+
+                        clear_path = True
+                        for move in moves_between:
+                            if(self.board[move[0]][move[1]].color != "none"):
+                                clear_path = False
+                                break
+                        if clear_path:
+                            if turn == "black":
+                                if (self.board[end[0]][end[1]].__str__() == "\u265A"):
+                                    print(f"{turn} checks white king")
+                                    return True
+                            elif turn == "white":
+                                if (self.board[end[0]][end[1]].__str__() == "\u2654"):
+                                    print(f"{turn} checks black king")
+                                    return True
+        return False
+        
+
+    def check_mate(self, turn):
+        # if turn is white and check - black king needs to move
+        # generate black king moves
+        # move black king to possible square and check for check
+        # if check check another move
+        # return list of moves where king is not checked
+        return False
 
     def update(self, turn):
         while True:
@@ -96,9 +132,13 @@ class Board:
             end = end_from_input(input)
         
             current_piece = self.board[start[0]][start[1]]
+
+            is_attacking = True
+            if(self.board[end[0]][end[1]].color == turn or self.board[end[0]][end[1]].color == "none"):
+                is_attacking = False
             
             # generate legal, in terms of chess theory, moves and checks whether the move that a player wants to make is included
-            legal_moves = self.board[start[0]][start[1]].generate_legal_moves(start[0], start[1])
+            legal_moves = self.board[start[0]][start[1]].generate_legal_moves(start[0], start[1], is_attacking)
             is_move_legal = current_piece.validate_move(legal_moves, end[0], end[1])
 
             # generate moves between piece's start and supposed end position
@@ -112,12 +152,19 @@ class Board:
 
             # make sure that the piece that is moving can only attack the opposite color
             is_valid_color = True
+
             if(self.board[end[0]][end[1]].color == turn):
                 print("You cannot attack yourself!")
                 is_valid_color = False
 
+            opposite_turn = "black"
+            if turn == "black":
+                opposite_turn == "white"
+
+            # and if your king will not be in check after move 
             if (current_piece.color == turn and is_move_legal and is_valid_color and clear_path):
-                # make this as a swap function?
+                # moving piece
                 self.board[end[0]][end[1]] = self.board[start[0]][start[1]]
                 self.board[start[0]][start[1]] = piece.Tile()
+                print(self.check(opposite_turn))
                 break

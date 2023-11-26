@@ -1,8 +1,11 @@
 basic two player version:
-- pawn movement: attacking diagonally and moving up to two squares if it is this pawn's first move
+- validating user input, moving a tile gives error
 - check and check mate
+extra:
 - castling
 - en passant
 - promotion
 upgrade:
 - ai vs player
+- telnet protocol
+- app 

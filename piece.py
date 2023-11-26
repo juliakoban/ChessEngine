@@ -34,13 +34,15 @@ class Piece(ABC):
 
     @abstractclassmethod
     # legal in terms of chess rules
-    def generate_legal_moves(self, row, col):
+    def generate_legal_moves(self, row, col, is_attacking):
         pass
 
     @abstractclassmethod
+    # generate moves between piece's start and supposed end position
     def moves_in_between(self, start, end, moves):
         pass
  
+    # checks whether the move that a player wants to make is included in the legal moves list
     def validate_move(self, moves, row, col):
         if [row, col] not in moves:
             print("Invalid move")
@@ -52,7 +54,7 @@ class Tile(Piece):
     def __str__(self):
         return TILE
 
-    def generate_legal_moves(self, row, col):
+    def generate_legal_moves(self, row, col, is_attacking):
         pass
     def moves_in_between(self, start, end, moves):
         pass
@@ -64,20 +66,34 @@ class Pawn(Piece):
             return WHITE_PAWN
         return BLACK_PAWN
 
-    def generate_legal_moves(self, row, col):
+    def generate_legal_moves(self, row, col, is_attacking):
         all_moves = []
         moves_on_board =[]
-        # first move row -2
-        # attack one diagonal
+
         if self._color == "white":
-            all_moves.append([row - 1, col])
+            if is_attacking:
+                all_moves.append([row - 1, col + 1]) # up right 
+                all_moves.append([row - 1, col - 1]) # up left
+
+            elif (row == 6): # first move for white pawn
+                all_moves.append([row - 2, col])
+                all_moves.append([row - 1, col])
+            else:
+                all_moves.append([row - 1, col])
         elif self._color == "black":
-            all_moves.append([row + 1, col])
+            if is_attacking:
+                all_moves.append([row + 1, col - 1]) # down left 
+                all_moves.append([row + 1, col + 1]) # down right
+
+            elif (row == 1): # first move for black pawn
+                all_moves.append([row + 2, col])
+                all_moves.append([row + 1, col])
+            else: all_moves.append([row + 1, col])
     
         for move in all_moves:
             if (move[0] <= 7 and move[0] >= 0 and move[1] >= 0 and move[1] <= 7):
                 moves_on_board.append(move)
-                
+
         return moves_on_board
     
     def moves_in_between(self, start, end, moves):
@@ -96,7 +112,7 @@ class Rook(Piece):
             return WHITE_ROOK
         return BLACK_ROOK
 
-    def generate_legal_moves(self, row, col):
+    def generate_legal_moves(self, row, col, is_attacking):
         all_moves = []
         moves_on_board =[]
 
@@ -140,7 +156,7 @@ class Knight(Piece):
             return WHITE_KNIGHT
         return BLACK_KNIGHT
 
-    def generate_legal_moves(self, row, col):
+    def generate_legal_moves(self, row, col, is_attacking):
         all_moves = []
         moves_on_board = []
 
@@ -169,7 +185,7 @@ class Bishop(Piece):
             return WHITE_BISHOP
         return BLACK_BISHOP
 
-    def generate_legal_moves(self, row, col):
+    def generate_legal_moves(self, row, col, is_attacking):
         all_moves = []
         moves_on_board =[]
         for _ in range(8):
@@ -206,7 +222,7 @@ class King(Piece):
             return WHITE_KING
         return BLACK_KING
 
-    def generate_legal_moves(self, row, col):
+    def generate_legal_moves(self, row, col, is_attacking):
         all_moves = []
         moves_on_board = []
 
@@ -235,7 +251,7 @@ class Queen(Piece):
             return WHITE_QUEEN
         return BLACK_QUEEN
 
-    def generate_legal_moves(self, row, col):
+    def generate_legal_moves(self, row, col, is_attacking):
         all_moves = []
         moves_on_board = []
         for _ in range(8):
