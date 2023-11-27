@@ -123,6 +123,11 @@ class Board:
         return False
 
     def update(self, turn):
+
+        opposite_turn = "black"
+        if turn == "black":
+            opposite_turn = "white"
+
         while True:
             print(f"{turn} to move!")
             
@@ -157,14 +162,22 @@ class Board:
                 print("You cannot attack yourself!")
                 is_valid_color = False
 
-            opposite_turn = "black"
-            if turn == "black":
-                opposite_turn == "white"
+            
 
             # and if your king will not be in check after move 
             if (current_piece.color == turn and is_move_legal and is_valid_color and clear_path):
                 # moving piece
+                start_piece = self.board[start[0]][start[1]]
+                end_piece = self.board[end[0]][end[1]]
                 self.board[end[0]][end[1]] = self.board[start[0]][start[1]]
                 self.board[start[0]][start[1]] = piece.Tile()
+                if self.check(opposite_turn):
+                    self.board[end[0]][end[1]] = end_piece
+                    self.board[start[0]][start[1]] = start_piece
+                    continue
+                
+                print(self.check(turn))
                 print(self.check(opposite_turn))
+                print(self.check("white"))
+                print(self.check("black"))
                 break
