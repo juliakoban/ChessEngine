@@ -71,9 +71,10 @@ class Pawn(Piece):
         moves_on_board =[]
 
         if self._color == "white":
-                
-            all_moves.append([row - 1, col + 1]) # up right 
-            all_moves.append([row - 1, col - 1]) # up left
+            if is_attacking:
+
+                all_moves.append([row - 1, col + 1]) # up right 
+                all_moves.append([row - 1, col - 1]) # up left
 
             if (row == 6): # first move for white pawn
                 all_moves.append([row - 2, col])
@@ -81,9 +82,10 @@ class Pawn(Piece):
             else:
                 all_moves.append([row - 1, col])
         elif self._color == "black":
-            
-            all_moves.append([row + 1, col - 1]) # down left 
-            all_moves.append([row + 1, col + 1]) # down right
+            if is_attacking:
+
+                all_moves.append([row + 1, col - 1]) # down left 
+                all_moves.append([row + 1, col + 1]) # down right
 
             if (row == 1): # first move for black pawn
                 all_moves.append([row + 2, col])

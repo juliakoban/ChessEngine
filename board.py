@@ -121,30 +121,37 @@ class Board:
         if turn == "black":
             opposite_turn = "white"
 
-        legal_moves = self.board[start[0]][start[1]].generate_legal_moves(start[0], start[1], False)
+        moves = self.board[start[0]][start[1]].generate_legal_moves(start[0], start[1], True)
+        legal_moves = []
+
+        if self.board[start[0]][start[1]].__str__() == "\u265F":
+                for move in moves:
+                    end = [move[0], move[1]]
+                    
+                    if (end[0] == start[0] - 1) and ((end[1] == start[1] - 1) or (end[1] == start[1] + 1)):
+                        
+                        if self.board[end[0]][end[1]].color == "black":
+                            legal_moves.append(move)
+                    else:
+                        if self.board[end[0]][end[1]].color != "black":
+                            legal_moves.append(move)
+        elif self.board[start[0]][start[1]].__str__() == "\u2659":
+                for move in moves:
+                    end = [move[0], move[1]]
+                    
+                    if (end[0] == start[0] + 1) and ((end[1] == start[1] - 1) or (end[1] == start[1] + 1)):
+                        
+                        if self.board[end[0]][end[1]].color == "white":
+                            legal_moves.append(move)
+                    else:
+                        if self.board[end[0]][end[1]].color != "white":
+                            legal_moves.append(move)
+        else:
+            legal_moves = moves
+
             
         for move in legal_moves:
             end = [move[0], move[1]]
-
-            if self.board[start[0]][start[1]].__str__() == "\u265F":
-                if (end[0] == start[0] - 1) and ((end[1] == start[1] - 1) or (end[1] == start[1] + 1)):
-                    if self.board[end[0]][end[1]].color == "white" or self.board[end[0]][end[1]].color == "none":
-                        legal_moves.remove(move)
-                        continue
-                else:
-                    if self.board[end[0]][end[1]].color == "black":
-                        legal_moves.remove(move)
-                        continue
-            elif self.board[start[0]][start[1]].__str__() == "\u2659":
-                if (end[0] == start[0] + 1) and ((end[1] == start[1] - 1) or (end[1] == start[1] + 1)):
-                    if self.board[end[0]][end[1]].color == "black" or self.board[end[0]][end[1]].color == "none":
-                        legal_moves.remove(move)
-                        continue
-                else:
-                    if self.board[end[0]][end[1]].color == "white":
-                        legal_moves.remove(move)
-                        continue
-
             
             moves_between = self.board[start[0]][start[1]].moves_in_between(start, end, legal_moves)
 
@@ -204,52 +211,52 @@ class Board:
             start = start_from_input(input)
             end = end_from_input(input)
 
-            # print(self.final_move_list(start, turn))
+            # self.final_move_list(start, turn)
 
-            # if end not in self.final_move_list(start, turn):
-            #     continue
+            if end not in self.final_move_list(start, turn):
+                continue
             
-            # self.board[end[0]][end[1]] = self.board[start[0]][start[1]]
-            # self.board[start[0]][start[1]] = piece.Tile()
-            # break
+            self.board[end[0]][end[1]] = self.board[start[0]][start[1]]
+            self.board[start[0]][start[1]] = piece.Tile()
+            break
         
-            current_piece = self.board[start[0]][start[1]]
+            # current_piece = self.board[start[0]][start[1]]
 
-            is_attacking = True
-            if(self.board[end[0]][end[1]].color == turn or self.board[end[0]][end[1]].color == "none"):
-                is_attacking = False
+            # is_attacking = True
+            # if(self.board[end[0]][end[1]].color == turn or self.board[end[0]][end[1]].color == "none"):
+            #     is_attacking = False
             
-            # generate legal, in terms of chess theory, moves and checks whether the move that a player wants to make is included
-            legal_moves = self.board[start[0]][start[1]].generate_legal_moves(start[0], start[1], is_attacking)
-            is_move_legal = current_piece.validate_move(legal_moves, end[0], end[1])
+            # # generate legal, in terms of chess theory, moves and checks whether the move that a player wants to make is included
+            # legal_moves = self.board[start[0]][start[1]].generate_legal_moves(start[0], start[1], is_attacking)
+            # is_move_legal = current_piece.validate_move(legal_moves, end[0], end[1])
 
-            # generate moves between piece's start and supposed end position
-            moves_between = current_piece.moves_in_between(start, end, legal_moves)
-            # checks whether the piece is not "jumping" over other pieces while moving
-            clear_path = True
-            for move in moves_between:
-                    if(self.board[move[0]][move[1]].color != "none"):
-                        print("You cannot jump over pieces!")
-                        clear_path = False
+            # # generate moves between piece's start and supposed end position
+            # moves_between = current_piece.moves_in_between(start, end, legal_moves)
+            # # checks whether the piece is not "jumping" over other pieces while moving
+            # clear_path = True
+            # for move in moves_between:
+            #         if(self.board[move[0]][move[1]].color != "none"):
+            #             print("You cannot jump over pieces!")
+            #             clear_path = False
 
-            # make sure that the piece that is moving can only attack the opposite color
-            is_valid_color = True
+            # # make sure that the piece that is moving can only attack the opposite color
+            # is_valid_color = True
 
-            if(self.board[end[0]][end[1]].color == turn):
-                print("You cannot attack yourself!")
-                is_valid_color = False
+            # if(self.board[end[0]][end[1]].color == turn):
+            #     print("You cannot attack yourself!")
+            #     is_valid_color = False
 
-            # and if your king will not be in check after move 
-            if (current_piece.color == turn and is_move_legal and is_valid_color and clear_path):
-                # moving piece
-                start_piece = self.board[start[0]][start[1]]
-                end_piece = self.board[end[0]][end[1]]
+            # # and if your king will not be in check after move 
+            # if (current_piece.color == turn and is_move_legal and is_valid_color and clear_path):
+            #     # moving piece
+            #     start_piece = self.board[start[0]][start[1]]
+            #     end_piece = self.board[end[0]][end[1]]
 
-                self.board[end[0]][end[1]] = self.board[start[0]][start[1]]
-                self.board[start[0]][start[1]] = piece.Tile()
+            #     self.board[end[0]][end[1]] = self.board[start[0]][start[1]]
+            #     self.board[start[0]][start[1]] = piece.Tile()
                 
-                if self.check(opposite_turn):
-                    self.board[end[0]][end[1]] = end_piece
-                    self.board[start[0]][start[1]] = start_piece
-                    continue
-                break
+            #     if self.check(opposite_turn):
+            #         self.board[end[0]][end[1]] = end_piece
+            #         self.board[start[0]][start[1]] = start_piece
+            #         continue
+            #     break
