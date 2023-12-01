@@ -109,7 +109,7 @@ class Board:
                                     return True
                             elif turn == "white":
                                 if (self.board[end[0]][end[1]].__str__() == "\u2654"):
-                                    print(f"{turn} checks black king")
+                                    #print(f"{turn} checks black king")
                                     return True
         return False
         
@@ -125,11 +125,28 @@ class Board:
             
         for move in legal_moves:
             end = [move[0], move[1]]
-            moves_between = self.board[start[0]][start[1]].moves_in_between(start, end, legal_moves)
 
-            if (self.board[start[0]][start[1]].__str__() == "\u265F" or self.board[start[0]][start[1]].__str__() == "\u2659") and self.board[end[0]][end[1]].color == opposite_turn:
-                legal_moves = self.board[start[0]][start[1]].generate_legal_moves(start[0], start[1], True)
-                continue
+            if self.board[start[0]][start[1]].__str__() == "\u265F":
+                if (end[0] == start[0] - 1) and ((end[1] == start[1] - 1) or (end[1] == start[1] + 1)):
+                    if self.board[end[0]][end[1]].color == "white" or self.board[end[0]][end[1]].color == "none":
+                        legal_moves.remove(move)
+                        continue
+                else:
+                    if self.board[end[0]][end[1]].color == "black":
+                        legal_moves.remove(move)
+                        continue
+            elif self.board[start[0]][start[1]].__str__() == "\u2659":
+                if (end[0] == start[0] + 1) and ((end[1] == start[1] - 1) or (end[1] == start[1] + 1)):
+                    if self.board[end[0]][end[1]].color == "black" or self.board[end[0]][end[1]].color == "none":
+                        legal_moves.remove(move)
+                        continue
+                else:
+                    if self.board[end[0]][end[1]].color == "white":
+                        legal_moves.remove(move)
+                        continue
+
+            
+            moves_between = self.board[start[0]][start[1]].moves_in_between(start, end, legal_moves)
 
         # checks whether the piece is not "jumping" over other pieces while moving
             clear_path = True
@@ -167,11 +184,8 @@ class Board:
             for column in range(8):
                 start = [row, column]
                 if self.board[row][column].color == turn:
-                    print(self.final_move_list(start, turn), row, column)
                     if self.final_move_list(start, turn) == []:
-                        print("no moves")
                         continue
-                    
                     return False
         
         return True
@@ -189,6 +203,15 @@ class Board:
 
             start = start_from_input(input)
             end = end_from_input(input)
+
+            # print(self.final_move_list(start, turn))
+
+            # if end not in self.final_move_list(start, turn):
+            #     continue
+            
+            # self.board[end[0]][end[1]] = self.board[start[0]][start[1]]
+            # self.board[start[0]][start[1]] = piece.Tile()
+            # break
         
             current_piece = self.board[start[0]][start[1]]
 
@@ -199,9 +222,6 @@ class Board:
             # generate legal, in terms of chess theory, moves and checks whether the move that a player wants to make is included
             legal_moves = self.board[start[0]][start[1]].generate_legal_moves(start[0], start[1], is_attacking)
             is_move_legal = current_piece.validate_move(legal_moves, end[0], end[1])
-
-            print(legal_moves)
-            print(self.final_move_list(start, turn))
 
             # generate moves between piece's start and supposed end position
             moves_between = current_piece.moves_in_between(start, end, legal_moves)

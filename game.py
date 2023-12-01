@@ -6,7 +6,7 @@ def main():
     chess_board = Board()
     turn = "white"
 
-    #os.system("clear")
+    os.system("clear")
     print("WELCOME TO THE CHESS GAME")
     chess_board.display()
 
@@ -15,7 +15,6 @@ def main():
         if chess_board.check_mate(turn):
             print("CHECK MATE! BLACK WINS!")
             break
-        print(chess_board.check_mate(turn))
         chess_board.update(turn)
         #os.system("clear")
         chess_board.display()
@@ -23,7 +22,6 @@ def main():
         if chess_board.check_mate(turn):
             print("CHECK MATE! WHITE WINS!")
             break
-        print(chess_board.check_mate(turn))
         chess_board.update(turn)
         #os.system("clear")
         chess_board.display()
