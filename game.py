@@ -12,15 +12,19 @@ def main():
 
     while True:
         turn = "white"
-        chess_board.update(turn)
         if chess_board.check_mate(turn):
+            print("CHECK MATE! BLACK WINS!")
             break
+        print(chess_board.check_mate(turn))
+        chess_board.update(turn)
         #os.system("clear")
         chess_board.display()
         turn = "black"
-        chess_board.update(turn)
         if chess_board.check_mate(turn):
+            print("CHECK MATE! WHITE WINS!")
             break
+        print(chess_board.check_mate(turn))
+        chess_board.update(turn)
         #os.system("clear")
         chess_board.display()
 
