@@ -16,14 +16,14 @@ def main():
             print("CHECK MATE! BLACK WINS!")
             break
         chess_board.update(turn)
-        #os.system("clear")
+        os.system("clear")
         chess_board.display()
         turn = "black"
         if chess_board.check_mate(turn):
             print("CHECK MATE! WHITE WINS!")
             break
         chess_board.update(turn)
-        #os.system("clear")
+        os.system("clear")
         chess_board.display()
 
 
