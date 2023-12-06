@@ -1,21 +1,28 @@
 import piece
-import os
-
 
 def is_valid_format(input):
-    # only letters A, ..., H
-    # only numbers 1, ..., 8
     # only 4 letter strings
+    if len(input) != 4:
+        return False
+    # only letters A, ..., H
+    elif (input[0].upper() < "A" or input[0].upper() > "H" or input[2].upper() < "A" or input[2].upper() > "H"):
+        return False
+    # only cyphers 1, ..., 8
+    elif (input[1] < "1" or input[1] > "8" or input[3] < "1" or input[3] > "8"):
+        return False
     return True
-
 
 def read():
     while True:
-        end_input = input("enter your move (e.g. B1C3): ").strip()
+        end_input = input("enter your move (e.g. B1C3 or b1c3): ").strip()
         if is_valid_format(end_input):
             return end_input
         print("Invalid input format")
 
+def user_input(turn):
+    print(f"{turn} to move!")   
+    input = read()
+    return start_from_input(input), end_from_input(input)
 
 def letter_to_number(letter):
     match letter:
@@ -199,64 +206,14 @@ class Board:
 
     def update(self, turn):
 
-        opposite_turn = "black"
-        if turn == "black":
-            opposite_turn = "white"
-
         while True:
-            print(f"{turn} to move!")
-            
-            input = read()
 
-            start = start_from_input(input)
-            end = end_from_input(input)
-
-            # self.final_move_list(start, turn)
+            start, end = user_input(turn)
 
             if end not in self.final_move_list(start, turn):
                 continue
             
+            # performing move on the board
             self.board[end[0]][end[1]] = self.board[start[0]][start[1]]
             self.board[start[0]][start[1]] = piece.Tile()
             break
-        
-            # current_piece = self.board[start[0]][start[1]]
-
-            # is_attacking = True
-            # if(self.board[end[0]][end[1]].color == turn or self.board[end[0]][end[1]].color == "none"):
-            #     is_attacking = False
-            
-            # # generate legal, in terms of chess theory, moves and checks whether the move that a player wants to make is included
-            # legal_moves = self.board[start[0]][start[1]].generate_legal_moves(start[0], start[1], is_attacking)
-            # is_move_legal = current_piece.validate_move(legal_moves, end[0], end[1])
-
-            # # generate moves between piece's start and supposed end position
-            # moves_between = current_piece.moves_in_between(start, end, legal_moves)
-            # # checks whether the piece is not "jumping" over other pieces while moving
-            # clear_path = True
-            # for move in moves_between:
-            #         if(self.board[move[0]][move[1]].color != "none"):
-            #             print("You cannot jump over pieces!")
-            #             clear_path = False
-
-            # # make sure that the piece that is moving can only attack the opposite color
-            # is_valid_color = True
-
-            # if(self.board[end[0]][end[1]].color == turn):
-            #     print("You cannot attack yourself!")
-            #     is_valid_color = False
-
-            # # and if your king will not be in check after move 
-            # if (current_piece.color == turn and is_move_legal and is_valid_color and clear_path):
-            #     # moving piece
-            #     start_piece = self.board[start[0]][start[1]]
-            #     end_piece = self.board[end[0]][end[1]]
-
-            #     self.board[end[0]][end[1]] = self.board[start[0]][start[1]]
-            #     self.board[start[0]][start[1]] = piece.Tile()
-                
-            #     if self.check(opposite_turn):
-            #         self.board[end[0]][end[1]] = end_piece
-            #         self.board[start[0]][start[1]] = start_piece
-            #         continue
-            #     break

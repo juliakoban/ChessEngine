@@ -4,7 +4,6 @@ import os
 def main():
 
     chess_board = Board()
-    turn = "white"
 
     os.system("clear")
     print("WELCOME TO THE CHESS GAME")
