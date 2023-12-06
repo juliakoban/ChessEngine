@@ -7,5 +7,4 @@ This project is my second, ongoing step in learning Python. Its present version 
 ## How To Play
 ```
 $ python3 game.py
-
 ```
